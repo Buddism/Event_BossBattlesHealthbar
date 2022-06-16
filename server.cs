@@ -26,6 +26,11 @@
 exec("./package.cs");
 exec("./events.cs");
 
+function serverCmdBBGui(%this)
+{
+	commandToClient(%this, 'BBGUI', "wakeGui");
+}
+
 function GameConnection::BBHB_setInfoString(%this, %type, %str0, %str1)
 {
 	commandToClient(%this, 'BBGUI', "setInfoString", %type, %str0, %str1);
