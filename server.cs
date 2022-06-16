@@ -47,6 +47,9 @@ function MinigameSO::BBHB_resetHealthbar(%this)
 //need to display the healthbar if they join late and we are still tracking it
 function GameConnection::BBHB_minigameAddMember(%this, %minigame)
 {
+	if(!%minigame.BBHB_isTracking)
+		return;
+
 	%trackObj = %minigame.trackObj;
 	%name = %minigame.BBHB_trackName;
 	%class = %minigame.BBHB_trackClass;
@@ -56,11 +59,8 @@ function GameConnection::BBHB_minigameAddMember(%this, %minigame)
 	//increment the healthbar count and set the name/class
 	%this.BBHB_setInfoString(1, %name, %class);
 
-	if(%minigame.BBHB_isTracking)
-	{
-		%healthStr = %minigame.BBHB_lastTrackStr;
-		%this.bottomPrint(%healthStr, 5);
-	}
+	%healthStr = %minigame.BBHB_lastTrackStr;
+	%this.bottomPrint(%healthStr, 5);
 }
 
 function MinigameSO::BBHB_init(%this)
@@ -111,7 +111,7 @@ function MinigameSO::BBHB_getHealthBarString(%this)
 //robbed from the boss battles add-on dump "function Slayer_OMA_printBossHealth(%mini, %player)"
 function MinigameSO::BBHB_printBossHealth(%this)
 {
-	if(!isObject(%this.trackObj))
+	if(!isObject(%this.BBHB_trackObj))
 		%healthStr = %this.BBHB_lastTrackStr;
 	else {
 		%healthStr = %this.BBHB_getHealthBarString();
@@ -124,6 +124,8 @@ function MinigameSO::BBHB_printBossHealth(%this)
 function MinigameSO::BBHB_doHealthbarTick(%this)
 {
 	cancel(%this.BBHB_tickSchedule);
+	if(!%this.BBHB_isTracking)
+		return;
 
 	%trackObj = %this.BBHB_trackObj;
 	%trackClearType = %this.BBHB_trackClearType;

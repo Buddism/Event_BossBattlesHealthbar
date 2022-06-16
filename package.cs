@@ -1,8 +1,8 @@
 package Event_BossBattles_Bot
 {
-	function GameConnection::onClientEnterGame(%this)
+	function GameConnection::autoAdminCheck(%this)
 	{
-		%parent = parent::onClientEnterGame(%this);
+		%parent = parent::autoAdminCheck(%this);
 
 		//inform the client this server handles BBGUI
 		commandToClient(%this, 'BBGui', "handshake");
@@ -11,7 +11,7 @@ package Event_BossBattles_Bot
 		commandToClient(%this, 'BBGui', "clearClasses");
 		commandToClient(%this, 'BBGui', "addClass", "");
 		commandToClient(%this, 'BBGui', "setBlockers", 1, 1, 1, 1, 1, 1);
-		%client.BBHB_resetHealthbar();
+		%this.BBHB_resetHealthbar();
 
 		return %parent;
 	}
@@ -19,11 +19,16 @@ package Event_BossBattles_Bot
 	function MiniGameSO::addMember (%minigame, %client)
 	{
 		%parent = parent::addMember(%minigame, %client);
-
-		%client.BBHB_resetHealthbar();
+		
 		%client.BBHB_minigameAddMember(%minigame);
 
 		return %parent;
+	}
+
+	function MinigameSO::removeMember(%minigame, %client)
+	{
+		%client.BBHB_resetHealthbar();
+		return parent::removeMember(%minigame, %client);
 	}
 };
 activatePackage(Event_BossBattles_Bot);
